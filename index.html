@@ -3,113 +3,222 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sweet Pastry Bakery Shop</title>
+    <title>Grand Bakery & Cafe Manager</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .bakery-card { background: #ffffff; border-radius: 20px; box-shadow: 0 15px 30px rgba(0,0,0,0.15); width: 100%; max-width: 480px; padding: 25px; border: 4px solid #fff; }
-        .header { text-align: center; border-bottom: 2px dashed #ffe0e9; padding-bottom: 15px; margin-bottom: 15px; }
-        .header h1 { color: #d63384; margin: 0 0 5px 0; font-size: 26px; }
-        .header p { color: #6c757d; margin: 0; font-size: 14px; }
+        * { box-sizing: border-box; font-family: 'Poppins', 'Segoe UI', sans-serif; }
+        body { background: #f7ebe8; margin: 0; padding: 15px; color: #4a3e3d; }
+        .game-container { max-width: 950px; margin: auto; background: #fff; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 20px; border: 4px solid #e8d5c4; }
         
-        .baker-section { display: flex; align-items: center; background: #fff5f8; padding: 12px; border-radius: 12px; margin-bottom: 15px; }
-        .baker-avatar { font-size: 45px; margin-right: 15px; background: #ffe6ed; padding: 5px 12px; border-radius: 50%; }
-        .baker-info h3 { margin: 0; color: #495057; font-size: 16px; }
-        .baker-info p { margin: 3px 0 0 0; color: #d63384; font-size: 13px; font-weight: bold; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: #fff0f3; padding: 15px 25px; border-radius: 15px; margin-bottom: 20px; border: 2px solid #ffccd5; }
+        .header h1 { margin: 0; color: #c9184a; font-size: 24px; }
+        .score-box { background: #c9184a; color: white; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 18px; }
 
-        .dashboard { display: flex; justify-content: space-between; background: #f8f9fa; padding: 12px 18px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #e9ecef; }
-        .stat-box { text-align: center; }
-        .stat-label { font-size: 12px; color: #6c757d; text-transform: uppercase; font-weight: bold; }
-        .stat-value { font-size: 20px; font-weight: bold; color: #d63384; }
-
-        .menu-title { font-size: 15px; color: #495057; margin-bottom: 10px; font-weight: bold; }
-        .items-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-        .item-card { background: #fff; border: 2px solid #f8f9fa; border-radius: 12px; padding: 12px; text-align: center; transition: all 0.2s ease; cursor: pointer; }
-        .item-card:hover { transform: translateY(-3px); border-color: #ff85a2; box-shadow: 0 5px 15px rgba(255, 133, 162, 0.2); }
-        .item-icon { font-size: 35px; margin-bottom: 5px; }
-        .item-name { font-weight: bold; font-size: 14px; color: #343a40; margin-bottom: 3px; }
-        .item-price { font-size: 12px; color: #20c997; font-weight: bold; }
+        .cafe-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
         
-        .bake-btn { background: linear-gradient(45deg, #ff416c, #ff4b2b); color: white; border: none; padding: 8px 12px; border-radius: 8px; font-size: 12px; font-weight: bold; cursor: pointer; width: 100%; margin-top: 8px; }
-        .bake-btn:hover { opacity: 0.9; }
+        /* Tables Area */
+        .area-title { font-size: 16px; font-weight: bold; color: #800f2f; margin-bottom: 10px; border-bottom: 2px solid #ffccd5; padding-bottom: 5px; }
+        .tables-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .table-card { background: #fdf0ed; border: 2px dashed #e8d5c4; border-radius: 12px; padding: 15px; text-align: center; min-height: 110px; display: flex; flex-direction: column; justify-content: center; align-items: center; position: relative; }
+        .table-card.occupied { background: #fff0f3; border-style: solid; border-color: #ffb3c1; }
+        .table-card.dirty { background: #e9ecef; border-color: #adb5bd; cursor: pointer; }
+        .speech-bubble { background: #fff; border: 1px solid #c9184a; border-radius: 8px; padding: 4px 8px; font-size: 12px; font-weight: bold; color: #c9184a; margin-bottom: 5px; animation: bounce 1s infinite alternate; }
 
-        .log-box { background: #fff5f8; border-left: 4px solid #d63384; padding: 10px 12px; border-radius: 4px; font-size: 13px; color: #495057; min-height: 20px; text-align: center; }
+        /* Menu Tabs & Items */
+        .menu-tabs { display: flex; gap: 8px; margin-bottom: 12px; }
+        .tab-btn { background: #f8f9fa; border: 1px solid #dee2e6; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 12px; flex: 1; }
+        .tab-btn.active { background: #c9184a; color: white; border-color: #c9184a; }
+        
+        .items-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; max-height: 320px; overflow-y: auto; padding-right: 5px; }
+        .item-card { background: #fff; border: 2px solid #ffccd5; border-radius: 10px; padding: 10px; text-align: center; position: relative; transition: 0.2s; }
+        .item-card:hover { transform: translateY(-2px); }
+        .item-card.locked { background: #e9ecef; border-color: #ced4da; opacity: 0.6; }
+        .item-icon { font-size: 28px; }
+        .item-name { font-size: 12px; font-weight: bold; margin: 4px 0; }
+        .item-ingredients { font-size: 9px; color: #6c757d; margin-bottom: 6px; min-height: 22px; }
+        .serve-btn { background: #25a244; color: white; border: none; padding: 5px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; width: 100%; font-weight: bold; }
+        .serve-btn:disabled { background: #6c757d; cursor: not-allowed; }
+        
+        .lock-overlay { font-size: 10px; font-weight: bold; color: #d90429; margin-top: 4px; }
+
+        .log-box { background: #fff0f3; border-left: 4px solid #c9184a; padding: 10px; border-radius: 6px; font-size: 12px; text-align: center; font-weight: bold; color: #590d22; }
+
+        @keyframes bounce { from { transform: translateY(0); } to { transform: translateY(-4px); } }
     </style>
 </head>
 <body>
 
-<div class="bakery-card">
+<div class="game-container">
     <div class="header">
-        <h1>🥐 Sweet Pastry Bakery</h1>
-        <p>Bake delicious treats and manage your shop!</p>
+        <h1>☕ Grand Pastry & Cafe</h1>
+        <div class="score-box">Score: <span id="score">0</span> pts</div>
     </div>
 
-    <div class="baker-section">
-        <div class="baker-avatar">👩‍🍳</div>
-        <div class="baker-info">
-            <h3>Head Chef Emma</h3>
-            <p>Status: Ready to Bake!</p>
-        </div>
-    </div>
-
-    <div class="dashboard">
-        <div class="stat-box">
-            <div class="stat-label">Total Score</div>
-            <div class="stat-value" id="score">0</div>
-        </div>
-        <div class="stat-box">
-            <div class="stat-label">Items Baked</div>
-            <div class="stat-value" id="count">0</div>
-        </div>
-    </div>
-
-    <div class="menu-title">Select Pastry to Bake & Serve:</div>
-
-    <div class="items-grid">
-        <div class="item-card">
-            <div class="item-icon">🥐</div>
-            <div class="item-name">French Croissant</div>
-            <div class="item-price">+10 Points</div>
-            <button class="bake-btn" onclick="bakeItem('Butter Croissant', 10)">Bake 🥐</button>
+    <div class="cafe-layout">
+        <!-- CAFE TABLES AREA -->
+        <div>
+            <div class="area-title">🪑 Cafe Tables & Customers</div>
+            <div class="tables-grid">
+                <div class="table-card" id="table-0">Empty Table</div>
+                <div class="table-card" id="table-1">Empty Table</div>
+                <div class="table-card" id="table-2">Empty Table</div>
+                <div class="table-card" id="table-3">Empty Table</div>
+            </div>
         </div>
 
-        <div class="item-card">
-            <div class="item-icon">🧁</div>
-            <div class="item-name">Berry Cupcake</div>
-            <div class="item-price">+15 Points</div>
-            <button class="bake-btn" onclick="bakeItem('Berry Cupcake', 15)">Bake 🧁</button>
-        </div>
-
-        <div class="item-card">
-            <div class="item-icon">🍰</div>
-            <div class="item-name">Strawberry Cake</div>
-            <div class="item-price">+25 Points</div>
-            <button class="bake-btn" onclick="bakeItem('Strawberry Cake', 25)">Bake 🍰</button>
-        </div>
-
-        <div class="item-card">
-            <div class="item-icon">🍩</div>
-            <div class="item-name">Glazed Donut</div>
-            <div class="item-price">+20 Points</div>
-            <button class="bake-btn" onclick="bakeItem('Glazed Donut', 20)">Bake 🍩</button>
+        <!-- MENU & BAKING AREA -->
+        <div>
+            <div class="area-title">📜 Bakery & Drinks Menu</div>
+            <div class="menu-tabs">
+                <button class="tab-btn active" onclick="showCategory('pastry')">Pastries (10)</button>
+                <button class="tab-btn" onclick="showCategory('cold')">Cold Drinks (5)</button>
+                <button class="tab-btn" onclick="showCategory('hot')">Hot Drinks (5)</button>
+            </div>
+            <div class="items-grid" id="items-container"></div>
         </div>
     </div>
 
-    <div class="log-box" id="log">Click on any pastry above to start serving customers!</div>
+    <div class="log-box" id="log">Welcome! Customers are arriving. Bake unlocked items to serve them!</div>
 </div>
 
 <script>
     let score = 0;
-    let itemCount = 0;
+    
+    // 20 Menu Items with Unlock Points and Ingredients
+    const menu = [
+        // 10 Pastries
+        { id: 'croissant', name: 'Croissant', cat: 'pastry', icon: '🥐', req: 0, pts: 10, ing: 'Butter, Flour, Yeast' },
+        { id: 'cupcake', name: 'Berry Cupcake', cat: 'pastry', icon: '🧁', req: 30, pts: 15, ing: 'Flour, Sugar, Berries' },
+        { id: 'donut', name: 'Glazed Donut', cat: 'pastry', icon: '🍩', req: 60, pts: 20, ing: 'Dough, Sugar Glaze' },
+        { id: 'cake', name: 'Strawberry Cake', cat: 'pastry', icon: '🍰', req: 100, pts: 25, ing: 'Cream, Strawberries, Sponge' },
+        { id: 'cookie', name: 'Choco Cookie', cat: 'pastry', icon: '🍪', req: 150, pts: 30, ing: 'Chocolate Chips, Butter' },
+        { id: 'pie', name: 'Apple Pie', cat: 'pastry', icon: '🥧', req: 200, pts: 35, ing: 'Apples, Cinnamon, Crust' },
+        { id: 'eclair', name: 'Choco Eclair', cat: 'pastry', icon: '🥖', req: 260, pts: 40, ing: 'Choux Pastry, Custard, Choco' },
+        { id: 'waffle', name: 'Belgian Waffle', cat: 'pastry', icon: '🧇', req: 330, pts: 45, ing: 'Waffle Batter, Syrup' },
+        { id: 'macaron', name: 'French Macaron', cat: 'pastry', icon: '🍬', req: 400, pts: 50, ing: 'Almond Flour, Ganache' },
+        { id: 'pancake', name: 'Honey Pancake', cat: 'pastry', icon: '🥞', req: 480, pts: 60, ing: 'Pancake Mix, Honey' },
 
-    function bakeItem(name, points) {
-        score += points;
-        itemCount++;
-        
-        document.getElementById('score').innerText = score;
-        document.getElementById('count').innerText = itemCount;
-        document.getElementById('log').innerHTML = "✨ Baked & served <strong>" + name + "</strong> for <span style='color: #20c997;'>+" + points + " Points</span>!";
+        // 5 Cold Drinks
+        { id: 'iced_tea', name: 'Peach Iced Tea', cat: 'cold', icon: '🧃', req: 50, pts: 15, ing: 'Tea Extract, Peach Syrup, Ice' },
+        { id: 'lemonade', name: 'Fresh Lemonade', cat: 'cold', icon: '🍋', req: 110, pts: 20, ing: 'Lemon Juice, Mint, Water, Ice' },
+        { id: 'iced_coffee', name: 'Iced Latte', cat: 'cold', icon: '🧋', req: 180, pts: 25, ing: 'Espresso, Cold Milk, Ice' },
+        { id: 'smoothie', name: 'Berry Smoothie', cat: 'cold', icon: '🥤', req: 270, pts: 35, ing: 'Blended Berries, Yogurt' },
+        { id: 'milkshake', name: 'Choco Milkshake', cat: 'cold', icon: '🍦', req: 360, pts: 45, ing: 'Ice Cream, Milk, Choco Syrup' },
+
+        // 5 Hot Drinks
+        { id: 'espresso', name: 'Espresso', cat: 'hot', icon: '☕', req: 80, pts: 15, ing: 'Roasted Coffee Beans, Water' },
+        { id: 'cappuccino', name: 'Cappuccino', cat: 'hot', icon: '☕', req: 140, pts: 20, ing: 'Espresso, Steamed Milk, Foam' },
+        { id: 'green_tea', name: 'Green Tea', cat: 'hot', icon: '🍵', req: 220, pts: 25, ing: 'Green Tea Leaves, Hot Water' },
+        { id: 'hot_choco', name: 'Hot Chocolate', cat: 'hot', icon: '🍫', req: 310, pts: 35, ing: 'Cocoa Powder, Warm Milk' },
+        { id: 'turkish_coffee', name: 'Turkish Coffee', cat: 'hot', icon: '☕', req: 420, pts: 50, ing: 'Fine Ground Beans, Water' }
+    ];
+
+    let tables = [
+        { status: 'empty', order: null },
+        { status: 'empty', order: null },
+        { status: 'empty', order: null },
+        { status: 'empty', order: null }
+    ];
+
+    let currentCat = 'pastry';
+
+    function renderMenu() {
+        const container = document.getElementById('items-container');
+        container.innerHTML = '';
+
+        const filtered = menu.filter(item => item.cat === currentCat);
+
+        filtered.forEach(item => {
+            const isUnlocked = score >= item.req;
+            const card = document.createElement('div');
+            card.className = `item-card ${isUnlocked ? '' : 'locked'}`;
+            
+            card.innerHTML = `
+                <div class="item-icon">${item.icon}</div>
+                <div class="item-name">${item.name}</div>
+                <div class="item-ingredients"><strong>Ingredients:</strong> ${item.ing}</div>
+                ${isUnlocked 
+                    ? `<button class="serve-btn" onclick="serveCustomer('${item.id}')">Serve (+${item.pts} pts)</button>`
+                    : `<div class="lock-overlay">🔒 Unlocks at ${item.req} pts</div>`
+                }
+            `;
+            container.appendChild(card);
+        });
     }
+
+    function showCategory(cat) {
+        currentCat = cat;
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+        event.target.classList.add('active');
+        renderMenu();
+    }
+
+    function updateTables() {
+        tables.forEach((t, idx) => {
+            const el = document.getElementById(`table-${idx}`);
+            if (t.status === 'empty') {
+                el.className = 'table-card';
+                el.innerHTML = `🪑 Table ${idx + 1}<br><small style="color:#adb5bd">Empty</small>`;
+            } else if (t.status === 'occupied') {
+                el.className = 'table-card occupied';
+                el.innerHTML = `
+                    <div class="speech-bubble">Wants: ${t.order.icon} ${t.order.name}</div>
+                    <div>👩‍🍳 Customer ${idx + 1}</div>
+                `;
+            } else if (t.status === 'dirty') {
+                el.className = 'table-card dirty';
+                el.innerHTML = `🧹 Dirty Table!<br><small>Click to clean (+5 pts)</small>`;
+                el.onclick = () => cleanTable(idx);
+            }
+        });
+    }
+
+    function spawnCustomers() {
+        tables.forEach((t, idx) => {
+            if (t.status === 'empty' && Math.random() < 0.6) {
+                // Pick an order from unlocked items
+                const unlocked = menu.filter(m => score >= m.req);
+                const randomOrder = unlocked[Math.floor(Math.random() * unlocked.length)];
+                t.status = 'occupied';
+                t.order = randomOrder;
+            }
+        });
+        updateTables();
+    }
+
+    function serveCustomer(itemId) {
+        const item = menu.find(m => m.id === itemId);
+        const matchIdx = tables.findIndex(t => t.status === 'occupied' && t.order.id === itemId);
+
+        if (matchIdx !== -1) {
+            score += item.pts;
+            tables[matchIdx].status = 'dirty';
+            tables[matchIdx].order = null;
+            document.getElementById('score').innerText = score;
+            document.getElementById('log').innerHTML = `✅ Served <strong>${item.name}</strong> to Table ${matchIdx + 1}! Earned <strong>+${item.pts} points</strong>!`;
+            renderMenu();
+            updateTables();
+        } else {
+            document.getElementById('log').innerHTML = `❌ No customer currently wants <strong>${item.name}</strong>! Check table orders.`;
+        }
+    }
+
+    function cleanTable(idx) {
+        if (tables[idx].status === 'dirty') {
+            score += 5;
+            tables[idx].status = 'empty';
+            document.getElementById('score').innerText = score;
+            document.getElementById('log').innerHTML = `🧹 Cleaned Table ${idx + 1}! Earned <strong>+5 bonus points</strong>!`;
+            renderMenu();
+            updateTables();
+        }
+    }
+
+    // Game loop: New customers every 4 seconds
+    setInterval(spawnCustomers, 4000);
+
+    // Initial render
+    renderMenu();
+    spawnCustomers();
 </script>
 
 </body>
